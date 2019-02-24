@@ -1,5 +1,8 @@
 package com.example.demo.businness.utilitarios;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import org.springframework.stereotype.Component;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -15,6 +18,7 @@ public class RetrofitApi {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(client())
                 .build();
         return retrofit;
     }
@@ -30,6 +34,16 @@ public class RetrofitApi {
         Response<T> rs = response.execute();
         T list = rs.body();
         return list;
+    }
+
+    OkHttpClient client() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+                .build();
+        return okHttpClient;
     }
 
 }
